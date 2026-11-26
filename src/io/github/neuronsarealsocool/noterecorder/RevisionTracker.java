@@ -17,6 +17,7 @@ public final class RevisionTracker {
     public static final class Event {
         public final String id, deviceId, path, kind, content, previousContent, capturedAt, day, basis;
         public final long modifiedAt, size; public final int offsetMinutes;
+        public boolean requiresPublication(){return "edit".equals(kind);}
         Event(String device, String path, String text, Snapshot previous, long modified, long size, long now, ZoneId zone) {
             this.id=UUID.randomUUID().toString();this.deviceId=device;this.path=path;this.content=text;this.previousContent=previous==null?null:previous.text;
             this.kind=previous==null?"baseline":"edit";this.capturedAt=Instant.ofEpochMilli(now).toString();this.size=size;
@@ -41,7 +42,7 @@ public final class RevisionTracker {
     public void commit(Event event) {snapshots.put(event.path,new Snapshot(event.content,event.id,event.modifiedAt,event.size));}
     public static boolean validPath(String path) {
         if(path.isEmpty()||path.length()>2048||path.contains("\\")||path.contains(":"))return false;
-        for(String part:path.split("/",-1))if(part.isEmpty()||part.startsWith(".")||part.equals(JOURNAL))return false;
+        for(String part:path.split("/",-1))if(part.isEmpty()||part.startsWith(".")||part.equals(JOURNAL)||part.equals("node_modules")||part.equals("__pycache__"))return false;
         for(char c:path.toCharArray())if(c<32)return false;
         return true;
     }

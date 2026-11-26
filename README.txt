@@ -1,4 +1,4 @@
-Note Version Recorder 1.0.0
+Note Version Recorder 1.0.1
 
 Android 8+ standalone foreground recorder for user-selected shared note folders.
 Works with editors that save UTF-8 note files, including Zettel Notes. No Obsidian installation or network permission is needed on the phone.

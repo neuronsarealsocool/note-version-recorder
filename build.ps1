@@ -37,7 +37,9 @@ if (!(Test-Path -LiteralPath $keystore)) {
   & (Join-Path $JavaBin 'keytool.exe') -genkeypair -keystore $keystore -storetype PKCS12 -alias recorder -keyalg RSA -keysize 3072 -validity 10000 -dname 'CN=Personal Note Version Recorder' -storepass:file $password
   Check-Exit 'Signing key creation'
 }
-$apk = Join-Path $out 'note-version-recorder-1.0.0.apk'
+[xml]$manifest = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'AndroidManifest.xml') -Raw
+$version = $manifest.manifest.GetAttribute('versionName','http://schemas.android.com/apk/res/android')
+$apk = Join-Path $out ("note-version-recorder-$version.apk")
 & $java -jar (Join-Path $sdk 'lib/apksigner.jar') sign --ks $keystore --ks-key-alias recorder --ks-pass "file:$password" --out $apk $aligned
 Check-Exit 'APK signing'
 & $java -jar (Join-Path $sdk 'lib/apksigner.jar') verify --verbose --print-certs $apk
