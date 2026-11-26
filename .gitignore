@@ -1,0 +1,9 @@
+/build/
+/.gradle/
+/.idea/
+*.apk
+*.p12
+*.keystore
+password.txt
+.env
+.DS_Store
